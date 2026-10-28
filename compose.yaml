@@ -1,0 +1,15 @@
+services:
+  public:
+    build: .
+    ports:
+      - "8001:8000"
+    restart: unless-stopped
+  auth:
+    build: .
+    ports:
+      - "8002:8000"
+    environment:
+      APP_USERNAME: ${APP_USERNAME:?Set APP_USERNAME in .env}
+      APP_PASSWORD: ${APP_PASSWORD:?Set APP_PASSWORD in .env}
+    command: ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "2", "--access-logfile", "-", "auth_app:create_app()"]
+    restart: unless-stopped
